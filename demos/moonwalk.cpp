@@ -14,7 +14,7 @@ int main()
 	scene::ISceneManager* scenemgr = device->getSceneManager();
 
 	// load and show quake2 .md2 model
-	scene::ISceneNode* node = scenemgr->addAnimatedMeshSceneNode(
+	scene::IAnimatedMeshSceneNode* node = scenemgr->addAnimatedMeshSceneNode(
 		scenemgr->getMesh("../data/mek/tris.md2"));
 
 	// if everything worked, add a texture and disable lighting
@@ -22,6 +22,16 @@ int main()
 	{
 		node->setMaterialTexture(0, driver->getTexture("../data/mek/chief.pcx"));
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
+		node->setMD2Animation(scene::EMAT_RUN);
+
+		scene::ISceneNodeAnimator* anim =
+                        scenemgr->createFlyStraightAnimator(core::vector3df(200,0,0),
+                        core::vector3df(-200,0,0), 9000, true);
+                if (anim)
+                {
+                        node->addAnimator(anim);
+                        anim->drop();
+                }
 	}
 
 	// add a first person shooter style user controlled camera
@@ -41,7 +51,7 @@ int main()
 		core::stringw caption =(L"FPS: ");
 		caption += driver->getFPS();
 		device->setWindowCaption(caption.c_str());
-		driver->beginScene(true, true, video::SColor(255,255,255,255));
+		driver->beginScene(true, true, video::SColor(255,113,113,113));
 		scenemgr->drawAll();
 		driver->endScene();
 	}

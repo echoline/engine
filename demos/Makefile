@@ -1,4 +1,7 @@
-all: md2show terrain
+all: md2show terrain moonwalk
+
+moonwalk: moonwalk.cpp 
+	g++ -o moonwalk moonwalk.cpp ../EventReceiver.cpp -I/usr/include/irrlicht/ -lIrrlicht
 
 md2show: md2show.cpp 
 	g++ -o md2show md2show.cpp ../EventReceiver.cpp -I/usr/include/irrlicht/ -lIrrlicht
@@ -7,4 +10,4 @@ terrain: terrain.cpp
 	g++ -o terrain terrain.cpp ../EventReceiver.cpp -I/usr/include/irrlicht/ -lIrrlicht
 
 clean:
-	rm -f md2show terrain
+	rm -f md2show terrain moonwalk
