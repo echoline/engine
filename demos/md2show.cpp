@@ -15,12 +15,12 @@ int main()
 
 	// load and show quake2 .md2 model
 	scene::ISceneNode* node = scenemgr->addAnimatedMeshSceneNode(
-		scenemgr->getMesh("../models/mek/tris.md2"));
+		scenemgr->getMesh("../data/mek/tris.md2"));
 
 	// if everything worked, add a texture and disable lighting
 	if (node)
 	{
-		node->setMaterialTexture(0, driver->getTexture("../models/mek/Y-Front.pcx"));
+		node->setMaterialTexture(0, driver->getTexture("../data/mek/chief.pcx"));
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
 	}
 
