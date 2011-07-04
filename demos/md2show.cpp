@@ -25,7 +25,8 @@ int main()
 	}
 
 	// add a first person shooter style user controlled camera
-	scenemgr->addCameraSceneNodeFPS();
+	scene::ICameraSceneNode *camera = scenemgr->addCameraSceneNodeFPS();
+	camera->setPosition(core::vector3df(0, 0, -100));
 
 	// disable mouse cursor
 	device->getCursorControl()->setVisible(false);
