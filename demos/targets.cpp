@@ -2,10 +2,23 @@
 #include "../EventReceiver.h"
 using namespace irr;
 
+// called when a mek scenenode is finished dying
+class AnimationEndCallBack : public scene::IAnimationEndCallBack
+{
+public:
+	void OnAnimationEnd(scene::IAnimatedMeshSceneNode *node)
+	{
+		node->setMD2Animation(scene::EMAT_BOOM);
+	}
+};
+
 int main()
 {
 	// Event Receiver
 	EventReceiver receiver;
+
+	// see above
+	AnimationEndCallBack callback;
 
 	// start up the engine
 	IrrlichtDevice *device = createDevice(video::EDT_OPENGL,
@@ -48,11 +61,13 @@ int main()
 
 	camera->setPosition(terrain->getTerrainCenter()
 				+ core::vector3df(0, 400, 0));
+	camera->setTarget(terrain->getTerrainCenter()
+				+ core::vector3df(100, 100, 100));
 
-	for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 10; i++) {
 		// load and show quake2 .md2 model
 		scene::IAnimatedMeshSceneNode* node = scenemgr->addAnimatedMeshSceneNode(
-			scenemgr->getMesh("../data/mek/tris.md2"));
+			scenemgr->getMesh("../data/mek/tris.md2"), 0, 1 /* pickable */);
 
 		// if everything worked, add a texture and disable lighting
 		if (node)
@@ -65,7 +80,8 @@ int main()
 			node->setMD2Animation(scene::EMAT_STAND);
 
 			scene::ISceneNodeAnimator* anim = scenemgr->createCollisionResponseAnimator(
-				    terrainSelector, node, core::vector3df(30, 40, 20),
+				    terrainSelector, node, 
+				    core::vector3df(30, 30, 20),
 				    core::vector3df(0,-10,0), // Gravity
 				    core::vector3df(0,0,0));
 			node->addAnimator(anim);
@@ -86,15 +102,17 @@ int main()
 	scene::ISceneNodeAnimator* anim = scenemgr->createCollisionResponseAnimator(
 				metaSelector, camera, 
 				core::vector3df(30, 40, 20),
-				core::vector3df(0,0,0), // Gravity
+				core::vector3df(0,-30,0), // Gravity
 				core::vector3df(0,0,0));
 	camera->addAnimator(anim);
 	anim->drop();
 
 
+	// TODO: crosshair
 	// disable mouse cursor
-	device->getCursorControl()->setVisible(false);
+	//device->getCursorControl()->setVisible(false);
 
+	scene::ISceneCollisionManager* collMan = scenemgr->getSceneCollisionManager();
 	u32 frames = 0;
 	// draw everything
 	while(device->run() && driver)
@@ -109,6 +127,45 @@ int main()
 		device->setWindowCaption(caption.c_str());
 		driver->beginScene(true, true, video::SColor(255,155,155,255));
 		scenemgr->drawAll();
+
+		if (receiver.IsLeftButtonDown()) {
+			// 1000 unit line in direction of camera
+			core::line3d<f32> ray;
+        	        ray.start = camera->getPosition();
+        	        ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 1000.0f;
+
+                	// Tracks the current intersection point with the level or a mesh
+                	core::vector3df intersection;
+                	// Used to show with triangle has been hit
+                	core::triangle3df hitTriangle;
+
+                	// This call is all you need to perform ray/triangle collision on every scene node
+                	// that has a triangle selector, including the Quake level mesh.  It finds the nearest
+                	// collision point/triangle, and returns the scene node containing that point.
+                	// Irrlicht provides other types of selection, including ray/triangle selector,
+                	// ray/box and ellipse/triangle selector, plus associated helpers.
+                	// See the methods of ISceneCollisionManager
+                	scene::IAnimatedMeshSceneNode *selectedSceneNode =
+                	        (scene::IAnimatedMeshSceneNode*)collMan->getSceneNodeAndCollisionPointFromRay(
+                	                        ray,
+                	                        intersection, // This will be the position of the collision
+                	                        hitTriangle, // This will be the triangle hit in the collision
+                	                        1, // This ensures that only nodes that we have
+                	                           // set up to be pickable are considered
+                	                        0); // Check the entire scene (this is actually the implicit default)
+
+			if(selectedSceneNode)
+                	{
+				// We need to reset the transform before doing our own rendering.
+                	        //driver->setTransform(video::ETS_WORLD, core::matrix4());
+                	        //driver->draw3DTriangle(hitTriangle, video::SColor(255,255,0,0));
+
+				selectedSceneNode->setMD2Animation(scene::EMAT_DEATH_FALLBACKSLOW);
+				selectedSceneNode->setLoopMode(false);
+				selectedSceneNode->setAnimationEndCallback(&callback);
+			}
+		}
+
 		driver->endScene();
 	}
 
