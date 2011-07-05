@@ -9,7 +9,8 @@ int main()
 
 	// start up the engine
 	IrrlichtDevice *device = createDevice(video::EDT_OPENGL,
-		core::dimension2d<u32>(640,480), 32, true, false, false, &receiver);
+		core::dimension2d<u32>(640,480), 32, true, false, false, 
+		&receiver);
 
 	video::IVideoDriver* driver = device->getVideoDriver();
 	scene::ISceneManager* scenemgr = device->getSceneManager();
@@ -48,7 +49,7 @@ int main()
 	camera->setPosition(terrain->getTerrainCenter()
 				+ core::vector3df(0, 400, 0));
 
-	for (int i = 0; i < 25; i++) {
+	for (int i = 0; i < 15; i++) {
 		// load and show quake2 .md2 model
 		scene::IAnimatedMeshSceneNode* node = scenemgr->addAnimatedMeshSceneNode(
 			scenemgr->getMesh("../data/mek/tris.md2"));
@@ -83,7 +84,10 @@ int main()
 	// create collision response animator and attach it to the camera
 	metaSelector->addTriangleSelector(terrainSelector);
 	scene::ISceneNodeAnimator* anim = scenemgr->createCollisionResponseAnimator(
-				metaSelector, camera, core::vector3df(30, 40, 20));
+				metaSelector, camera, 
+				core::vector3df(30, 40, 20),
+				core::vector3df(0,0,0), // Gravity
+				core::vector3df(0,0,0));
 	camera->addAnimator(anim);
 	anim->drop();
 
