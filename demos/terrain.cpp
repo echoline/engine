@@ -95,11 +95,10 @@ int main()
 
 	// add a first person shooter style user controlled camera
 	scene::ICameraSceneNode* camera = scenemgr->addCameraSceneNodeFPS();
-	camera->setPosition(core::vector3df(100, 1000, 100));
 
 	// add terrain scene node
 	scene::ITerrainSceneNode* terrain = scenemgr->addTerrainSceneNode(
-	    "../data/terrain.bmp",
+	    "../data/heightmap.bmp",
 	    0,						  // parent node
 	    -1,						 // node id
 	    core::vector3df(0.f, 0.f, 0.f),	   // position
@@ -130,6 +129,8 @@ int main()
 	selector->drop();
 	camera->addAnimator(anim);
 	anim->drop();
+
+	camera->setPosition(terrain->getTerrainCenter() + core::vector3df(0, 400, 0));
 
 	// disable mouse cursor
 	device->getCursorControl()->setVisible(false);
