@@ -39,7 +39,7 @@ int main()
 	    core::vector3df(0.f, 0.f, 0.f),	   // position
 	    core::vector3df(0.f, 0.f, 0.f),	   // rotation
 	    core::vector3df(40.f, 4.4f, 40.f),	// scale
-	    video::SColor ( 255, 255, 255, 255 ),   // vertexColor
+	    video::SColor ( 255, 133, 133, 133 ),   // vertexColor
 	    5,						  // maxLOD
 	    scene::ETPS_17,				 // patchSize
 	    4						   // smoothFactor
@@ -64,7 +64,8 @@ int main()
 	camera->setTarget(terrain->getTerrainCenter()
 				+ core::vector3df(100, 100, 100));
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 10; i++)
+	{
 		// load and show quake2 .md2 model
 		scene::IAnimatedMeshSceneNode* node = scenemgr->addAnimatedMeshSceneNode(
 			scenemgr->getMesh("../data/mek/tris.md2"), 0, 1 /* pickable */);
@@ -102,7 +103,7 @@ int main()
 	scene::ISceneNodeAnimator* anim = scenemgr->createCollisionResponseAnimator(
 				metaSelector, camera, 
 				core::vector3df(30, 40, 20),
-				core::vector3df(0,-30,0), // Gravity
+				core::vector3df(0,-20,0), // Gravity
 				core::vector3df(0,0,0));
 	camera->addAnimator(anim);
 	anim->drop();
@@ -117,7 +118,8 @@ int main()
 	// draw everything
 	while(device->run() && driver)
 	{
-		if (receiver.IsKeyDown(KEY_KEY_Q)) {
+		if (receiver.IsKeyDown(KEY_KEY_Q))
+		{
 			device->closeDevice();
 			break;
 		}
@@ -128,11 +130,18 @@ int main()
 		driver->beginScene(true, true, video::SColor(255,155,155,255));
 		scenemgr->drawAll();
 
-		if (receiver.IsLeftButtonDown()) {
+		if (receiver.IsLeftButtonDown())
+		{
 			// 1000 unit line in direction of camera
 			core::line3d<f32> ray;
         	        ray.start = camera->getPosition();
         	        ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 1000.0f;
+
+
+			//driver->setMaterialFlag(video::EMF_LIGHTING, false);
+			driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
+			driver->draw3DLine(ray.start, ray.end, video::SColor(128,255,0,0));
+			
 
                 	// Tracks the current intersection point with the level or a mesh
                 	core::vector3df intersection;
@@ -164,6 +173,10 @@ int main()
 				selectedSceneNode->setLoopMode(false);
 				selectedSceneNode->setAnimationEndCallback(&callback);
 			}
+		}
+		else if (receiver.IsRightButtonDown())
+		{
+			
 		}
 
 		driver->endScene();

@@ -19,6 +19,12 @@ bool EventReceiver::OnEvent(const SEvent& event)
 			LeftButtonDown = false;
 			break;
 
+		case EMIE_RMOUSE_PRESSED_DOWN:
+			RightButtonDown = true;
+
+		case EMIE_RMOUSE_LEFT_UP:
+			RightButtonDown = false;
+
 		default:
 			break;
 		}
@@ -36,6 +42,11 @@ bool EventReceiver::IsKeyDown(EKEY_CODE keyCode) const
 bool EventReceiver::IsLeftButtonDown() const
 {
 	return LeftButtonDown;
+}
+
+bool EventReceiver::IsRightButtonDown() const
+{
+	return RightButtonDown;
 }
 	
 EventReceiver::EventReceiver()
