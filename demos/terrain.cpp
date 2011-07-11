@@ -72,6 +72,23 @@ int main()
 		driver->beginScene(true, true, video::SColor(255,133,133,255));
 		scenemgr->drawAll();
 		driver->endScene();
+
+		if(terrain->shift(camera->getPosition()))
+		{
+			// create triangle selector for the terrain     
+			scene::IMetaTriangleSelector* selector
+				= terrain->createTriangleSelector(scenemgr, 0);
+			terrain->setTriangleSelector(selector);
+
+			// create collision response animator and attach it to the camera
+			scene::ISceneNodeAnimator* anim = scenemgr->createCollisionResponseAnimator(
+				    selector, camera, core::vector3df(60,100,60),
+				    core::vector3df(0,-1,0), // Gravity
+				    core::vector3df(0,0,0));
+			selector->drop();
+			camera->addAnimator(anim);
+			anim->drop();
+		}
 	}
 
 	// delete device
