@@ -9,7 +9,7 @@ class TerrainSceneNode : public scene::ISceneNode
 private:
 	scene::ITerrainSceneNode *terrains[3][3];
 	core::aabbox3d<float> Box;
-	bool centerOn(int, int);
+	void centerOn(scene::ISceneNode*, int, int);
 
 public:
 	TerrainSceneNode(scene::ISceneNode*, scene::ISceneManager*, s32);
@@ -17,7 +17,7 @@ public:
 	void render();
 	const core::aabbox3d<float>& getBoundingBox() const;
 	scene::IMetaTriangleSelector* createTriangleSelector(scene::ISceneManager*, s32);
-	bool shift(const core::vector3df &center);
+	void shift(scene::ISceneNode*);
 
         const core::vector3df &getTerrainCenter() { 
 		return terrains[1][1]->getTerrainCenter();
