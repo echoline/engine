@@ -1,6 +1,5 @@
 #include <irrlicht.h>
 #include "../EventReceiver.h"
-#include "../MekSceneNode.h"
 using namespace irr;
 using namespace scene;
 
