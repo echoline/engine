@@ -1,5 +1,6 @@
 #include <irrlicht.h>
 #include "../EventReceiver.h"
+#include "../TerrainSceneNode.h"
 using namespace irr;
 using namespace scene;
 
@@ -34,28 +35,11 @@ int main()
 	scene::ICameraSceneNode* camera = scenemgr->addCameraSceneNodeFPS();
 
 	// add terrain scene node
-	scene::ITerrainSceneNode* terrain = scenemgr->addTerrainSceneNode(
-	    "../data/heightmap.bmp",
-	    0,						  // parent node
-	    -1,						 // node id
-	    core::vector3df(0.f, 0.f, 0.f),	   // position
-	    core::vector3df(0.f, 0.f, 0.f),	   // rotation
-	    core::vector3df(40.f, 4.4f, 40.f),	// scale
-	    video::SColor ( 255, 133, 133, 133 ),   // vertexColor
-	    5,						  // maxLOD
-	    scene::ETPS_17,				 // patchSize
-	    4						   // smoothFactor
-	    );
-
-	terrain->setMaterialFlag(video::EMF_LIGHTING, false);
-
-	terrain->setMaterialTexture(0, driver->getTexture("../data/texture.bmp"));
-	  
-	terrain->setMaterialType(video::EMT_DETAIL_MAP);
+	TerrainSceneNode* terrain = new TerrainSceneNode(NULL, scenemgr, -1);
 
 	// create triangle selector for the terrain     
-	scene::ITriangleSelector* terrainSelector
-		= scenemgr->createTerrainTriangleSelector(terrain, 0);
+	scene::IMetaTriangleSelector* terrainSelector
+		= terrain->createTriangleSelector(scenemgr, 0);
 	terrain->setTriangleSelector(terrainSelector);
 
 	scene::IMetaTriangleSelector *metaSelector = scenemgr->createMetaTriangleSelector();
@@ -130,6 +114,8 @@ int main()
 			device->closeDevice();
 			break;
 		}
+
+		terrain->shift(camera);
 
 		core::stringw caption =(L"FPS: ");
 		caption += driver->getFPS();

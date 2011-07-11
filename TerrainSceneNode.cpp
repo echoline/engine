@@ -17,7 +17,7 @@ TerrainSceneNode::TerrainSceneNode(scene::ISceneNode *parent, scene::ISceneManag
 			-1, position,
 			RelativeRotation,	   // rotation
 	   		RelativeScale,	// scale
-	   		video::SColor ( 255, 255, 255, 255 ),   // vertexColor
+	   		video::SColor ( 255, 133, 133, 133 ),   // vertexColor
 	   		5,						  // maxLOD
 	   		scene::ETPS_17,				 // patchSize
 	   		4);						   // smoothFactor
@@ -65,7 +65,7 @@ void TerrainSceneNode::centerOn(scene::ISceneNode *in, int x, int y) {
 		return;
 
 	core::vector3df position(in->getPosition());
-	position.Y += 25.f;
+	position.Y = 10.f;
 
 	cout << x << " " << y << endl;
 
@@ -75,6 +75,7 @@ void TerrainSceneNode::centerOn(scene::ISceneNode *in, int x, int y) {
 		break;
 	case 2:
 		position.X -= 128 * RelativeScale.X;
+	default:
 		break;
 	}
 
@@ -84,6 +85,7 @@ void TerrainSceneNode::centerOn(scene::ISceneNode *in, int x, int y) {
 		break;
 	case 2:
 		position.Z -= 128 * RelativeScale.Z;
+	default:
 		break;
 	}
 
@@ -116,3 +118,4 @@ void TerrainSceneNode::shift(ISceneNode *in)
 
 	centerOn(in, i, j);
 }
+
