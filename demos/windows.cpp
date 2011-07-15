@@ -1,47 +1,9 @@
 #include <irrlicht.h>
 #include "../EventReceiver.h"
 #include "../TerrainSceneNode.h"
+#include "../WindowSceneNode.h"
 using namespace irr;
 using namespace scene;
-
-class Window : public ISceneNode
-{
-	core::aabbox3d<f32> Box;
-	scene::ISceneManager *smgr;
-	video::SMaterial material;
-
-public:
-	Window(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id, core::aabbox3d<f32> b)
-                : scene::ISceneNode(parent, mgr, id)
-        {
-		Box = b;
-		smgr = mgr;
-		material.Lighting = false;
-		material.Wireframe = true;
-
-		smgr->getRootSceneNode()->addChild(this);
-	}
-
-	void OnRegisterSceneNode()
-        {
-                if (IsVisible)
-                        SceneManager->registerNodeForRendering(this);
-
-                scene::ISceneNode::OnRegisterSceneNode();
-        }
-
-	void render()
-	{
-		smgr->getVideoDriver()->setMaterial(material);
-		smgr->getVideoDriver()->setTransform(video::ETS_WORLD, core::IdentityMatrix);
-		smgr->getVideoDriver()->draw3DBox(Box, video::SColor(128,255,0,0));			
-	}
-
-	const core::aabbox3df& getBoundingBox() const
-	{
-		return Box;
-	}
-};
 
 int main()
 {
@@ -73,45 +35,8 @@ int main()
 	camera->setPosition(terrain->getTerrainCenter()
 				+ core::vector3df(0, 400, 0));
 	camera->setTarget(terrain->getTerrainCenter()
-				+ core::vector3df(100, 100, 100));
+				+ core::vector3df(100, 400, 100));
 
-/*	for (int i = 0; i < 10; i++)
-	{
-		// load and show quake2 .md2 model
-		IAnimatedMeshSceneNode* node = scenemgr->addAnimatedMeshSceneNode(scenemgr->getMesh(
-				"../data/mek/tris.md2"),
-				0,
-				(1 << 0));
-
-		// if everything worked, add a texture and disable lighting
-		if (node)
-		{
-			node->setMaterialTexture(0, driver->getTexture("../data/mek/mek.pcx"));
-			node->setMaterialFlag(video::EMF_LIGHTING, false);
-			node->setPosition(terrain->getTerrainCenter()
-				+ core::vector3df(rand() % 1000 - 500, 400, 
-				  rand() % 1000 - 500));
-			node->setMD2Animation(scene::EMAT_STAND);
-
-			const core::aabbox3d<f32>& box = node->getBoundingBox();
-			core::vector3df radius = box.MaxEdge - box.getCenter();
-
-			scene::ISceneNodeAnimator* anim = scenemgr->createCollisionResponseAnimator(
-				    terrainSelector, node, 
-				    radius,
-				    core::vector3df(0,-10,0), // Gravity
-				    core::vector3df(0,0,0));
-			node->addAnimator(anim);
-			anim->drop();
-
-			scene::ITriangleSelector* s = scenemgr->createTriangleSelector(node);
-			node->setTriangleSelector(s);
-
-			metaSelector->addTriangleSelector(s);
-			s->drop();
-
-		}
-	}*/
 	terrainSelector->drop();
 
 	// create collision response animator and attach it to the camera
@@ -124,8 +49,6 @@ int main()
 	camera->addAnimator(anim);
 	anim->drop();
 
-
-	// TODO: crosshair
 	// disable mouse cursor
 	//device->getCursorControl()->setVisible(false);
 
@@ -148,7 +71,7 @@ int main()
 		core::stringw caption =(L"FPS: ");
 		caption += driver->getFPS();
 		device->setWindowCaption(caption.c_str());
-		driver->beginScene(true, true, video::SColor(255,155,155,255));
+		driver->beginScene(true, true, video::SColor(255,133,133,255));
 		scenemgr->drawAll();
 
 		if (receiver.IsLeftButtonDown())
@@ -163,6 +86,17 @@ int main()
 			driver->setMaterial(material);
 			driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
 			driver->draw3DLine(ray.start, ray.end, video::SColor(128,255,0,0));
+
+			WindowSceneNode *selwin =
+                	        (WindowSceneNode*)collMan->getSceneNodeFromRayBB(
+                	                        ray,
+                	                        8);
+                	                      	
+			if (selwin) {
+				selwin->deselectAll();
+				selwin->selected = true;
+				goto END;
+			}
 
 			if (buttons[0] == false)
 			{
@@ -181,16 +115,15 @@ int main()
 		{
 			buttons[0] = false;
 
-			Window *w = new Window(NULL, scenemgr, -1, box);
-			//w->drop();
-			//w = NULL;
+			WindowSceneNode *w = new WindowSceneNode(NULL, scenemgr, 8, box, camera);
+			w->drop();
+			w = NULL;
 		}
 		if (receiver.IsRightButtonDown())
 		{
 			if (buttons[1] == false)
 			{
 				buttons[1] = true;
-
 			}
 		}
 		else if (buttons[1] == true)
@@ -198,6 +131,7 @@ int main()
 			buttons[1] = false;
 		}
 
+END:
 		driver->endScene();
 	}
 
