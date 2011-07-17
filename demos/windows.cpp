@@ -2,8 +2,12 @@
 #include "../EventReceiver.h"
 #include "../TerrainSceneNode.h"
 #include "../WindowSceneNode.h"
+#include "../NineImageLoader.h"
 using namespace irr;
 using namespace scene;
+
+#include <iostream>
+using namespace std;
 
 int main()
 {
@@ -17,6 +21,9 @@ int main()
 
 	video::IVideoDriver* driver = device->getVideoDriver();
 	scene::ISceneManager* scenemgr = device->getSceneManager();
+
+	// plan9 image format reader
+	driver->addExternalImageLoader(new NineImageLoader(driver));
 
 	// add a first person shooter style user controlled camera
 	scene::ICameraSceneNode* camera = scenemgr->addCameraSceneNodeFPS();
@@ -44,7 +51,7 @@ int main()
 	scene::ISceneNodeAnimator* anim = scenemgr->createCollisionResponseAnimator(
 				metaSelector, camera, 
 				core::vector3df(20, 20, 20),
-				core::vector3df(0,-20,0), // Gravity
+				core::vector3df(0,-1,0), // Gravity
 				core::vector3df(0,0,0));
 	camera->addAnimator(anim);
 	anim->drop();
@@ -55,8 +62,9 @@ int main()
 	scene::ISceneCollisionManager* collMan = scenemgr->getSceneCollisionManager();
 	u32 frames = 0;
 	bool buttons[2] = {false, false};
-	core::vector3df start;
-	core::aabbox3d<f32> box;
+	WindowSceneNode *w;
+	WindowSceneNode *selwin = NULL;
+
 	// draw everything
 	while(device->run() && driver)
 	{
@@ -76,49 +84,44 @@ int main()
 
 		if (receiver.IsLeftButtonDown())
 		{
-			// 1000 unit line in direction of camera
+			// 500 unit line in direction of camera
 			core::line3d<f32> ray;
-       	        	ray.start = camera->getPosition() + core::vector3df(0, -10, 0);
-       	        	ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 1000.0f;
-
-			video::SMaterial material;
-			material.setFlag(video::EMF_LIGHTING, false);
-			driver->setMaterial(material);
-			driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
-			driver->draw3DLine(ray.start, ray.end, video::SColor(128,255,0,0));
-
-			WindowSceneNode *selwin =
-                	        (WindowSceneNode*)collMan->getSceneNodeFromRayBB(
-                	                        ray,
-                	                        8);
-                	                      	
-			if (selwin) {
-				selwin->deselectAll();
-				selwin->selected = true;
-				goto END;
-			}
+       	        	ray.start = camera->getPosition();// + core::vector3df(0, -10, 0);
+       	        	ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 500.0f;
 
 			if (buttons[0] == false)
 			{
-				buttons[0] = true;
-				start = ray.end;
+				// ray/windows collision selection
+				core::vector3df hitpoint;
+				core::triangle3df hittri;
+				w = (WindowSceneNode*)collMan->getSceneNodeAndCollisionPointFromRay(ray, hitpoint, hittri, 8);
+
+				if (w != NULL)
+				{
+					w->select();
+					selwin = w;
+					w = NULL;
+				}
+				else
+				{
+					buttons[0] = true;
+					w = new WindowSceneNode(NULL, scenemgr, 8, ray.end);
+				}
 			}
 			else
 			{
-				driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
-				box = core::aabbox3d<f32>(start);
-				box.addInternalPoint(ray.end);
-				driver->draw3DBox(box, video::SColor(128,255,0,0));
+				w->setCorner(ray.end);
 			}
 		}
 		else if (buttons[0] == true)
 		{
 			buttons[0] = false;
 
-			WindowSceneNode *w = new WindowSceneNode(NULL, scenemgr, 8, box, camera);
+			w->made();
 			w->drop();
 			w = NULL;
 		}
+
 		if (receiver.IsRightButtonDown())
 		{
 			if (buttons[1] == false)
@@ -131,8 +134,14 @@ int main()
 			buttons[1] = false;
 		}
 
-END:
 		driver->endScene();
+
+		video::IImage *image = driver->createImageFromFile("/home/eli/wsys/window");
+		for (int i=0; i < WindowSceneNode::windows.size(); i++)
+		{
+			WindowSceneNode::windows[i]->update(image);
+		}
+		image->drop();
 	}
 
 	// delete device

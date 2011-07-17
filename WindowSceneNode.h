@@ -7,22 +7,32 @@ using namespace irr;
 
 class WindowSceneNode : public scene::ISceneNode
 {
-	core::aabbox3d<f32> Box;
 	scene::ISceneManager *smgr;
 	video::SMaterial material;
-	static std::vector<WindowSceneNode*> windows;
-	core::vector3df corners[4];
+	video::SMaterial white;
+	core::aabbox3d<f32> box;
+	core::dimension2d<u32> windim;
+	scene::SMesh *mesh;
+	bool creating;
+	bool selected;
+	core::stringc texname;
+	video::ITexture *texture;
 
 public:
 	WindowSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr,
-			s32, core::aabbox3d<f32>, scene::ICameraSceneNode*);
+			s32, core::vector3df);
 	~WindowSceneNode();
 
-	void deselectAll();
+	void select();
 	void OnRegisterSceneNode();
 	void render();
 	const core::aabbox3df& getBoundingBox() const;
-	bool selected;
+	void setCorner(core::vector3df);
+	void made();
+	void update(video::IImage*);
+	
+	static std::vector<WindowSceneNode*> windows;
+	static u32 winstances;
 };
 
 #endif
