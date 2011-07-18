@@ -9,7 +9,6 @@ class WindowSceneNode : public scene::ISceneNode
 {
 	scene::ISceneManager *smgr;
 	video::SMaterial material;
-	video::SMaterial white;
 	core::aabbox3d<f32> box;
 	core::dimension2d<u32> windim;
 	scene::SMesh *mesh;

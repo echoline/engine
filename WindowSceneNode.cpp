@@ -20,10 +20,6 @@ WindowSceneNode::WindowSceneNode(scene::ISceneNode* parent, scene::ISceneManager
 	material.FrontfaceCulling = false;
 	material.AntiAliasing = video::EAAM_QUALITY;
 
-	white.Lighting = false;
-	white.Thickness = 2;
-	white.AntiAliasing = video::EAAM_QUALITY;
-
 	selected = false;
 	creating = true;
 
@@ -44,7 +40,7 @@ WindowSceneNode::WindowSceneNode(scene::ISceneNode* parent, scene::ISceneManager
 	winstances++;
 	texname = "window";
 	texname += winstances;
-	texture = smgr->getVideoDriver()->addTexture(core::dimension2d<u32>(128, 128), texname.c_str(), video::ECF_A8R8G8B8);
+	texture = smgr->getVideoDriver()->addTexture(core::dimension2d<u32>(256, 256), texname.c_str(), video::ECF_A8R8G8B8);
 	cout << texname.c_str() << endl;
 
 	u8 *data = (u8*)texture->lock();
@@ -53,13 +49,6 @@ WindowSceneNode::WindowSceneNode(scene::ISceneNode* parent, scene::ISceneManager
 
 	material.setTexture(0, texture);
 
-/*	textures.push_back(smgr->getVideoDriver()->addTexture(core::dimension2d<u32>(128, 128), "window" + instance, video::ECF_A8R8G8B8));
-	video::ITexture *texture = textures.getLast();
-	u32 *data = (u32*)texture->lock();
-	memset(data, 0x88, texture->getPitch() * texture->getSize().Height);
-	texture->unlock();*/
-
-//	smgr->addMeshSceneNode(mesh);
 	smgr->getRootSceneNode()->addChild(this);
 }
 
@@ -98,7 +87,7 @@ void WindowSceneNode::OnRegisterSceneNode()
 void WindowSceneNode::update(video::IImage *image)
 {
 	void *data = texture->lock();
-	image->copyToScaling(data, 128, 128, video::ECF_A8R8G8B8, 128*4);
+	image->copyToScaling(data, 256, 256, video::ECF_A8R8G8B8, 256*4);
 	texture->unlock();
 }
 
@@ -109,17 +98,6 @@ void WindowSceneNode::render()
 	smgr->getVideoDriver()->setMaterial(material);
 	smgr->getVideoDriver()->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 	smgr->getVideoDriver()->drawMeshBuffer(mesh->getMeshBuffer(0));
-
-/*	smgr->getVideoDriver()->setMaterial(white);
-	for (int i=0; i < 4; i++)
-		smgr->getVideoDriver()->draw3DLine(vertices[i].Pos, vertices[(i+1)%4].Pos,
-					creating?
-					video::SColor(128, 255, 0, 0):
-					selected?
-					video::SColor(128, 0, 133, 255):
-					video::SColor(128, 0, 255, 255));
-fuck it, broken and useless... */
-	//smgr->getVideoDriver()->draw3DBox(box, video::SColor(128, 0, 0, 0));
 }
 
 const core::aabbox3df& WindowSceneNode::getBoundingBox() const

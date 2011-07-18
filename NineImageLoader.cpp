@@ -80,6 +80,7 @@ video::IImage* NineImageLoader::loadImage(io::IReadFile *file) const
 		return NULL;
 
 	data = new char[w*h*4+1024];
+	file->seek(0);
 	r = file->read(data, w*h*4+1024);
 	
 	char* ptr = data;
