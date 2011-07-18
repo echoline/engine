@@ -12,7 +12,7 @@ using namespace std;
 
 pthread_mutex_t net_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-static void *net(void *arg)
+void *net(void *arg)
 {
 	video::IVideoDriver *driver = reinterpret_cast<video::IVideoDriver*>(arg);
 
@@ -24,11 +24,14 @@ static void *net(void *arg)
 		{
 			pthread_mutex_lock(&net_mutex);
 			WindowSceneNode::windows[i]->update(image);
+			cout << "window " << i << " updated(?)" << endl;
 			pthread_mutex_unlock(&net_mutex);
 		}
 
 		image->drop();
 	}
+
+	pthread_exit(0);
 }
 
 int main()
@@ -83,8 +86,7 @@ int main()
 
 	// start network fetching
 	pthread_t net_thread;
-	cout << "create thread: " << pthread_create(&net_thread, NULL, net, (void*)driver) << endl;
-//	pthread_mutex_unlock(&net_mutex); // HAHA
+	pthread_create(&net_thread, NULL, &net, (void*)driver);
 
 	scene::ISceneCollisionManager* collMan = scenemgr->getSceneCollisionManager();
 	u32 frames = 0;
@@ -95,6 +97,14 @@ int main()
 	// draw everything
 	while(device->run() && driver)
 	{
+		if (device->isWindowActive() == false)
+		{
+			device->yield();
+			continue;
+		}
+
+		pthread_mutex_lock(&net_mutex);
+
 		if (receiver.IsKeyDown(KEY_KEY_Q))
 		{
 			device->closeDevice();
@@ -106,8 +116,6 @@ int main()
 		core::stringw caption =(L"FPS: ");
 		caption += driver->getFPS();
 		device->setWindowCaption(caption.c_str());
-
-		pthread_mutex_lock(&net_mutex);
 
 		driver->beginScene(true, true, video::SColor(255,133,133,255));
 		scenemgr->drawAll();
@@ -148,6 +156,10 @@ int main()
 			buttons[0] = false;
 
 			w->made();
+			// this works
+			/*video::IImage *image = driver->createImageFromFile("/home/eli/wsys/window");
+			w->update(image);
+			image->drop();*/
 			w->drop();
 			w = NULL;
 		}

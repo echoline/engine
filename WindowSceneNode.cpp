@@ -43,11 +43,13 @@ WindowSceneNode::WindowSceneNode(scene::ISceneNode* parent, scene::ISceneManager
 	texture = smgr->getVideoDriver()->addTexture(core::dimension2d<u32>(256, 256), texname.c_str(), video::ECF_A8R8G8B8);
 	cout << texname.c_str() << endl;
 
-	u8 *data = (u8*)texture->lock();
+	void *data = texture->lock();
 	memset(data, 0xFF, texture->getPitch() * texture->getSize().Height);
 	texture->unlock();
 
 	material.setTexture(0, texture);
+
+	//texture->drop();
 
 	smgr->getRootSceneNode()->addChild(this);
 }
@@ -85,6 +87,11 @@ void WindowSceneNode::update(video::IImage *image)
 	void *data = texture->lock();
 	image->copyToScaling(data, 256, 256, video::ECF_A8R8G8B8, 256*4);
 	texture->unlock();
+
+	/*video::IImage *im = smgr->getVideoDriver()->createImage(texture, core::position2d<s32>(0,0), texture->getSize());
+	smgr->getVideoDriver()->writeImageToFile(im, "blah.bmp");
+	im->drop();*/
+	//material.setTexture(0, texture);
 }
 
 void WindowSceneNode::render()

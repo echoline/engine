@@ -1,8 +1,6 @@
 #ifndef WINDOWSCENENODE_H
 #define WINDOWSCENENODE_H
-
 #include <irrlicht.h>
-#include <vector>
 using namespace irr;
 
 class WindowSceneNode : public scene::ISceneNode
