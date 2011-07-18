@@ -10,7 +10,8 @@ using namespace scene;
 #include <iostream>
 using namespace std;
 
-pthread_mutex_t net_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t tex_mutex = PTHREAD_MUTEX_INITIALIZER;
+video::IImage *image = NULL;
 
 void *net(void *arg)
 {
@@ -18,17 +19,13 @@ void *net(void *arg)
 
 	while(true)
 	{
-		video::IImage *image = driver->createImageFromFile("/home/eli/wsys/window");
-
-		for (int i=0; i < WindowSceneNode::windows.size(); i++)
+		if (image == NULL)
 		{
-			pthread_mutex_lock(&net_mutex);
-			WindowSceneNode::windows[i]->update(image);
-			cout << "window " << i << " updated(?)" << endl;
-			pthread_mutex_unlock(&net_mutex);
+			pthread_mutex_lock(&tex_mutex);
+			image = driver->createImageFromFile("/home/eli/wsys/window");
+			pthread_mutex_unlock(&tex_mutex);
 		}
-
-		image->drop();
+		usleep(1);
 	}
 
 	pthread_exit(0);
@@ -88,6 +85,7 @@ int main()
 	pthread_t net_thread;
 	pthread_create(&net_thread, NULL, &net, (void*)driver);
 
+	// prepare for while loop!
 	scene::ISceneCollisionManager* collMan = scenemgr->getSceneCollisionManager();
 	u32 frames = 0;
 	bool buttons[2] = {false, false};
@@ -103,8 +101,6 @@ int main()
 			continue;
 		}
 
-		pthread_mutex_lock(&net_mutex);
-
 		if (receiver.IsKeyDown(KEY_KEY_Q))
 		{
 			device->closeDevice();
@@ -119,6 +115,7 @@ int main()
 
 		driver->beginScene(true, true, video::SColor(255,133,133,255));
 		scenemgr->drawAll();
+		driver->endScene();
 
 		if (receiver.IsLeftButtonDown())
 		{
@@ -157,7 +154,7 @@ int main()
 
 			w->made();
 			// this works
-			/*video::IImage *image = driver->createImageFromFile("/home/eli/wsys/window");
+/*			video::IImage *image = driver->createImageFromFile("/home/eli/wsys/window");
 			w->update(image);
 			image->drop();*/
 			w->drop();
@@ -176,9 +173,18 @@ int main()
 			buttons[1] = false;
 		}
 
-		driver->endScene();
-
-		pthread_mutex_unlock(&net_mutex);
+		if (image != NULL)
+		{
+			pthread_mutex_lock(&tex_mutex);
+			for (int i=0; i < WindowSceneNode::windows.size(); i++)
+			{
+				WindowSceneNode::windows[i]->update(image);
+//				cout << "window " << i << " updated(?)" << endl;
+			}
+			image->drop();
+			image = NULL;
+			pthread_mutex_unlock(&tex_mutex);
+		}
 	}
 
 	// delete device
