@@ -30,7 +30,7 @@ public:
 	void made();
 	void update(video::IImage*);
 	
-	static std::vector<WindowSceneNode*> windows;
+	static core::array<WindowSceneNode*> windows;
 	static u32 winstances;
 };
 

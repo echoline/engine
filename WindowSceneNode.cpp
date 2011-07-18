@@ -53,27 +53,23 @@ WindowSceneNode::WindowSceneNode(scene::ISceneNode* parent, scene::ISceneManager
 }
 
 WindowSceneNode::~WindowSceneNode() {
-	std::vector<WindowSceneNode*>::iterator it;
-
-	for (it=windows.begin(); it < windows.end(); it++)
+	for (int i=0; i < windows.size(); i++)
 	{
-		if (*it == this)
+		if (windows[i] == this)
 		{
-			windows.erase(it);
+			windows.erase(i);
 		}
 	}
 }
 
 void WindowSceneNode::select()
 {
-	std::vector<WindowSceneNode*>::iterator it;
-
-	for (it=windows.begin(); it < windows.end(); it++)
+	for (int i=0; i < windows.size(); i++)
 	{
-		(*it)->selected = false;
+		windows[i]->selected = false;
 	}
 
-	this->selected = false;
+	this->selected = true;
 }
 
 void WindowSceneNode::OnRegisterSceneNode()
@@ -134,5 +130,5 @@ void WindowSceneNode::made()
 	windows.push_back(this);
 }
 
-std::vector<WindowSceneNode*> WindowSceneNode::windows = std::vector<WindowSceneNode*>();
+core::array<WindowSceneNode*> WindowSceneNode::windows = core::array<WindowSceneNode*>();
 u32 WindowSceneNode::winstances = 0;

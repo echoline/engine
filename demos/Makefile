@@ -13,7 +13,7 @@ targets: targets.cpp
 	g++ -o targets targets.cpp ../EventReceiver.cpp ../TerrainSceneNode.cpp -I/usr/include/irrlicht/ -lIrrlicht
 
 windows: windows.cpp 
-	g++ -o windows windows.cpp ../EventReceiver.cpp ../TerrainSceneNode.cpp ../WindowSceneNode.cpp ../NineImageLoader.cpp -I/usr/include/irrlicht/ -lIrrlicht -pthread
+	g++ -g -o windows windows.cpp ../EventReceiver.cpp ../TerrainSceneNode.cpp ../WindowSceneNode.cpp ../NineImageLoader.cpp -I/usr/include/irrlicht/ -lIrrlicht -lpthread
 
 clean:
 	rm -f md2show terrain moonwalk targets windows

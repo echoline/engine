@@ -12,9 +12,9 @@ using namespace std;
 
 pthread_mutex_t net_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void *net(void *arg)
+static void *net(void *arg)
 {
-	video::IVideoDriver *driver = (video::IVideoDriver*)arg;
+	video::IVideoDriver *driver = reinterpret_cast<video::IVideoDriver*>(arg);
 
 	while(true)
 	{
