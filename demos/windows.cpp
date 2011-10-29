@@ -8,6 +8,7 @@ using namespace irr;
 using namespace scene;
 
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 pthread_mutex_t tex_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -33,12 +34,14 @@ void *net(void *arg)
 
 int main()
 {
+	ofstream cons("/home/eli/wsys/cons");
+
 	// Event Receiver
 	EventReceiver receiver;
 
 	// start up the engine
 	IrrlichtDevice *device = createDevice(video::EDT_OPENGL,
-		core::dimension2d<u32>(640,480), 32, false, false, false, 
+		core::dimension2d<u32>(640,480), 32, true, false, false, 
 		&receiver);
 
 	video::IVideoDriver* driver = device->getVideoDriver();
@@ -62,9 +65,9 @@ int main()
 	metaSelector->addTriangleSelector(terrainSelector);
 
 	camera->setPosition(terrain->getTerrainCenter()
-				+ core::vector3df(0, 400, 0));
+				+ core::vector3df(0, 100, 0));
 	camera->setTarget(terrain->getTerrainCenter()
-				+ core::vector3df(100, 400, 100));
+				+ core::vector3df(100, 100, 100));
 
 	terrainSelector->drop();
 
@@ -101,7 +104,7 @@ int main()
 			continue;
 		}
 
-		if (receiver.IsKeyDown(KEY_KEY_Q))
+		if (receiver.IsKeyDown(KEY_ESCAPE))
 		{
 			device->closeDevice();
 			break;
@@ -173,9 +176,8 @@ int main()
 			buttons[1] = false;
 		}
 
-		if (image != NULL)
+		if ((image != NULL) && (pthread_mutex_trylock(&tex_mutex) == 0))
 		{
-			pthread_mutex_lock(&tex_mutex);
 			for (int i=0; i < WindowSceneNode::windows.size(); i++)
 			{
 				WindowSceneNode::windows[i]->update(image);
@@ -185,6 +187,14 @@ int main()
 			image = NULL;
 			pthread_mutex_unlock(&tex_mutex);
 		}
+
+		while (receiver.keypresses.size() > 0)
+		{
+			cons << (char)receiver.keypresses[0];
+			receiver.keypresses.erase(0);
+		}
+
+		usleep(1);
 	}
 
 	// delete device

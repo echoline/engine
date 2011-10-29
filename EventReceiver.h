@@ -14,6 +14,8 @@ public:
 	bool IsRightButtonDown() const;
 	EventReceiver();
 
+	core::array<EKEY_CODE> keypresses;
+
 private:
 	bool KeyIsDown[KEY_KEY_CODES_COUNT];
 	bool LeftButtonDown;

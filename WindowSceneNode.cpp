@@ -40,8 +40,8 @@ WindowSceneNode::WindowSceneNode(scene::ISceneNode* parent, scene::ISceneManager
 	winstances++;
 	texname = "window";
 	texname += winstances;
-	texture = smgr->getVideoDriver()->addTexture(core::dimension2d<u32>(256, 256), texname.c_str(), video::ECF_A8R8G8B8);
-	cout << texname.c_str() << endl;
+	texture = smgr->getVideoDriver()->addTexture(core::dimension2d<u32>(512, 512), texname.c_str(), video::ECF_A8R8G8B8);
+	//cout << texname.c_str() << endl;
 
 	void *data = texture->lock();
 	memset(data, 0xFF, texture->getPitch() * texture->getSize().Height);
@@ -85,13 +85,8 @@ void WindowSceneNode::OnRegisterSceneNode()
 void WindowSceneNode::update(video::IImage *image)
 {
 	void *data = texture->lock();
-	image->copyToScaling(data, 256, 256, video::ECF_A8R8G8B8, 256*4);
+	image->copyToScaling(data, 512, 512, video::ECF_A8R8G8B8, 512*4);
 	texture->unlock();
-
-	/*video::IImage *im = smgr->getVideoDriver()->createImage(texture, core::position2d<s32>(0,0), texture->getSize());
-	smgr->getVideoDriver()->writeImageToFile(im, "blah.bmp");
-	im->drop();*/
-	//material.setTexture(0, texture);
 }
 
 void WindowSceneNode::render()
@@ -133,6 +128,8 @@ void WindowSceneNode::made()
 	float z = vertices[0].Pos.Z - vertices[3].Pos.Z;
 	x = sqrt(x * x + z * z);
 	windim = core::dimension2di(x, y);
+
+	cout << windim.Width << "x" << windim.Height << endl;
 
 	windows.push_back(this);
 }

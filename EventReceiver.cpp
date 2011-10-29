@@ -5,7 +5,12 @@ bool EventReceiver::OnEvent(const SEvent& event)
 {
 	// Remember whether each key is down or up
 	if (event.EventType == irr::EET_KEY_INPUT_EVENT)
+	{
+		if (event.KeyInput.PressedDown && KeyIsDown[event.KeyInput.Key] == false)
+			keypresses.push_back(event.KeyInput.Key);
+
 		KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
+	}
 
 	else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT)
         {

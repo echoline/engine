@@ -23,9 +23,9 @@ TerrainSceneNode::TerrainSceneNode(scene::ISceneNode *parent, scene::ISceneManag
 	   		4);						   // smoothFactor
 
 		terrains[i][j]->setMaterialFlag(video::EMF_LIGHTING, false);
-		terrains[i][j]->setMaterialTexture(0, scenemgr->getVideoDriver()
-				->getTexture("../data/texture.bmp"));
-		terrains[i][j]->setMaterialType(video::EMT_DETAIL_MAP);
+//		terrains[i][j]->setMaterialTexture(0, scenemgr->getVideoDriver()
+//				->getTexture("../data/texture.bmp"));
+//		terrains[i][j]->setMaterialType(video::EMT_DETAIL_MAP);
 
 		Box.addInternalBox(terrains[i][j]->getBoundingBox());
 	}
