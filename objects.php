@@ -146,7 +146,10 @@ function clock($x, $y, $z, $id, $firstpacket) {
 }
 
 function pyramid($x, $y, $z, $id) {
-	echo '{"id":"pyramid' . $id . '","p":[' . $x . ',' . $y . ',' . $z . '],"r":[0,-50,0],"ps":[[300,0,300],[300,0,-300],[0,-300,0]],"type":"polygon","f":"#dda"}';
+	echo '{"id":"pyramid_a' . $id . '","p":[' . $x . ',' . $y . ',' . $z . '],"r":[0,-50,0],"ps":[[300,0,300],[300,0,-300],[0,-300,0]],"type":"polygon","f":"#dda","c":"#dda"},';
+	echo '{"id":"pyramid_b' . $id . '","p":[' . $x . ',' . $y . ',' . $z . '],"r":[0,-50,0],"ps":[[-300,0,-300],[300,0,-300],[0,-300,0]],"type":"polygon","f":"#dda","c":"#dda"},';
+	echo '{"id":"pyramid_c' . $id . '","p":[' . $x . ',' . $y . ',' . $z . '],"r":[0,-50,0],"ps":[[300,0,300],[-300,0,300],[0,-300,0]],"type":"polygon","f":"#dda","c":"#dda"},';
+	echo '{"id":"pyramid_d' . $id. '","p":[' . $x . ',' . $y . ',' . $z . '],"r":[0,-50,0],"ps":[[-300,0,-300],[300,0,-300],[0,-300,0]],"type":"polygon","f":"#dda","c":"#dda"}';
 }
 
 function player($x, $y, $z, $a, $b, $c, $id, $color) {

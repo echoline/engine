@@ -22,6 +22,7 @@ function Scene3D(canvas)
 	this.items=[];
 	this.itemids=[];
 	this.origin={"x":0,"y":0,"z":0};
+	this.health = 1;
 
 	this.render=function()
 	{
@@ -129,6 +130,12 @@ function Scene3D(canvas)
 		}
 
 	        this.context.restore();
+		this.context.strokeStyle = '#F00';
+		this.context.lineWidth=3;
+		this.context.beginPath();
+		this.context.lineTo (25, this.sceneHeight-15);
+		this.context.lineTo (25 + (this.sceneWidth-50) * this.health, this.sceneHeight-15);
+		this.context.stroke();
 	}
 
 

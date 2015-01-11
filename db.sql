@@ -51,6 +51,7 @@ CREATE TABLE `players` (
   `p` text,
   `r` text,
   `cookie` varchar(255) NOT NULL,
+  `water` int(11) DEFAULT NULL,
   PRIMARY KEY (`cookie`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -73,4 +74,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-01-05 11:36:48
+-- Dump completed on 2015-01-10  8:42:04

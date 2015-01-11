@@ -4,6 +4,7 @@
 	}
 
 	$time = time();
+	$health = 1;
 
 	$p = $_POST['p'];
 	$r = $_POST['r'];
@@ -64,6 +65,12 @@
 		echo ',';
 		oasis(0, 0, 0, $i++, 150);
 		echo ',';
+		pyramid(8000, 0, 50000, 0, true);
+		echo ',';
+		pyramid(10000, 0, 50000, 1, true);
+		echo ',';
+		pyramid(12000, 0, 50000, 2, true);
+		echo ',';
 	}
 
 	$my_mysql = mysql_connect($my_host, $my_user, $my_pass);
@@ -73,7 +80,18 @@
 		$cookie = mysql_real_escape_string($_POST['cookie']);
 
 		if (!$firstpacket) {
-			$results = mysql_query('replace into players (time, p, r, cookie) values (' . $time . ',\'' . $p . '\',\'' .  $r . '\',\'' . $cookie . '\')', $my_mysql);
+			$results = mysql_query('select water from players where cookie=\'' . $cookie . '\'', $my_mysql);
+			$water = mysql_fetch_row ($results);
+			if ($water != NULL)
+				$water = $water[0];
+			$pos = split(',', $p);
+			$dist = sqrt($pos[0]*$pos[0] + $pos[2]*$pos[2]);
+			if ($dist < 150.0) {
+				$water = $time;
+			}
+			$health = (300 - ($time - $water)) / 300.0;
+			if ($health > 0)
+				$results = mysql_query('replace into players (time, p, r, cookie, water) values (' . $time . ',\'' . $p . '\',\'' .  $r . '\',\'' . $cookie . '\',' . $water . ')', $my_mysql);
 		}
 
 		$results = mysql_query('select p,r,cookie,time from players where cookie!=\'' . $cookie . '\'', $my_mysql);
@@ -110,7 +128,7 @@
 					$p = $row[0];
 					$r = $row[1];
 				} else {
-					$results = mysql_query('replace into players (time, p, r, cookie) values (' . $time . ',\'' . $p . '\',\'' .  $r . '\',\'' . $cookie . '\')', $my_mysql);
+					$results = mysql_query('replace into players (time, p, r, cookie, water) values (' . $time . ',\'' . $p . '\',\'' .  $r . '\',\'' . $cookie . '\',' . $time . ')', $my_mysql);
 				}
 			}
 		}
@@ -123,6 +141,7 @@
 
 	player($pos[0],$pos[1],$pos[2],$rot[0],$rot[1],$rot[2],0,'#' . substr($cookie, -3, 3));
 
+
 ?>],"u":<?php
 
 	if ($firstpacket) {
@@ -131,4 +150,9 @@
 	} else {
 		echo 'null';
 	}
+?>,"h":<?php
+	if ($health > 0)
+		echo $health;
+	else
+		echo '0';
 ?>}

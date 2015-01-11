@@ -117,8 +117,12 @@ function update()
 
 					scene.rotation.y = stuff.u[1][1];
 				}
+				if (stuff.h) {
+					scene.health = stuff.h;
+				}
 			}
-			setTimeout("update()", 333);
+			if (scene.health > 0)
+				setTimeout("update()", 333);
 		}
 	};
 	xhr.open ('POST', 'update', true);
