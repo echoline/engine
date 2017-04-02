@@ -61,13 +61,20 @@
 			}
 			else alert('invalid color');
 		}
+
+		function saykeypress(event) {
+			if (event.keyCode == 13){
+				say();
+			}
+		}
 	// -->
 	</script>
+	<br/>
 	x:<input id="xinput" onfocus="window.teleporting=true"></input> z:<input id="zinput" onfocus="window.teleporting=true"></input>
 	<input type="button" value="Teleport" onclick="teleport()" autofocus="autofocus"></input>
 	#<input type="text" id="color"></input>
 	<input type="button" value="Color" onclick="color()"></input>
 	<br/>
 	<div id="messages"></div>
-	<input type="text" style="width:700px" id="message"></input>
+	<input type="text" style="width:700px" id="message" onkeypress="saykeypress(event)"></input>
 	<input type="button" value="Say" onclick="say()"></input>
