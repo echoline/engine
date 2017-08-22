@@ -47,6 +47,22 @@
 
 	if ($firstpacket) {
 		$i=2;
+		cactus(5000,0,5000, $i++);
+		echo ',';
+		cactus(4200,0,1300, $i++);
+		echo ',';
+		cactus(2000,0,-1300, $i++);
+		echo ',';
+		cactus(-2000,0,-1300, $i++);
+		echo ',';
+		cactus(-2000,0,1300, $i++);
+		echo ',';
+		cactus(1300,0,2000, $i++);
+		echo ',';
+		cactus(1300,0,-2000, $i++);
+		echo ',';
+		cactus(-1300,0,-1300, $i++);
+		echo ',';
 		oasis(0, 0, 0, $i++, 150);
 		echo ',';
 		oasis(8000, 0, 20000, $i++, 150);
@@ -54,6 +70,12 @@
 		oasis(-8000, 0, -20000, $i++, 150);
 		echo ',';
 		oasis(0, 0, 0, $i++, 150);
+		echo ',';
+		pyramid(8000, 0, 50000, 0, true);
+		echo ',';
+		pyramid(10000, 0, 50000, 1, true);
+		echo ',';
+		pyramid(12000, 0, 50000, 2, true);
 		echo ',';
 	}
 

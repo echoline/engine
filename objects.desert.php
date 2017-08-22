@@ -50,8 +50,52 @@ function oasis($x, $y, $z, $id, $r) {
 	$M_2_PI = M_PI*2;
 	$M_PI_8 = M_PI/8;
 
+	$np = 3;
+
+	for ($i = 0; $i < $np; $i++) {
+		$lx = rand(-8,8);
+		$lz = rand(-8,8);
+		$ang = (rand(0, 360) / 360) * $M_2_PI;
+		$cx = cos($ang) * $r * 1.1;
+		$cz = sin($ang) * $r * 1.1;
+		$dy = 0;
+
+		echo '{"id":"palm' . $id . '_' . $i . '",';
+		echo '"p":[' . $x . ',' . $y . ',' . $z . '],';
+		echo '"r":[0,0,0],"c":"#cc8","ps":[';
+		echo '[' .  $cx . ',' . $dy . ',' . $cz . '],';
+
+		$tx = $cx + $lx;
+		$tz = $cz + $lz;
+		$ty = $dy - rand(55, 89);
+		echo '[' .  $tx . ',' . $ty . ',' . $tz . ']';
+
+		echo '],"w":13},';
+
+		$nf = rand(3,7);
+		$spc = 360 / $nf;
+		$ang = rand(0, 360);
+		$s = rand(55,89);
+
+		echo '{"id":"fronds' . $id . '_' . $i . '",';
+		echo '"p":[' . $x . ',' . $y . ',' . $z . '],';
+		echo '"r":[0,0,0],"c":"#6a6","ps":[';
+		for ($j = 0; $j < $nf; $j++) {
+			$theta = ($ang / 360) * $M_2_PI;
+
+			echo '[' .  $tx . ',' . $ty . ',' . $tz . '],';
+			echo '[' .  ($tx + cos($theta) * $s) . ',' .
+				($ty + rand(8,13)) . ',' .
+				($tz + sin($theta) * $s) . '],';
+
+			$ang += $spc;
+		}
+		echo '[' .  $tx . ',' . $ty . ',' . $tz . ']';
+		echo ']},';
+	}
+
 	echo '{"id":"oasis' . $id . '","p":[' . $x . ',' . $y . ',' . $z;
-	echo '],"r":[0,0,0],"c":"#f00","f":"#fa4","ps":[[0,0,' . $r . ']';
+	echo '],"r":[0,0,0],"c":"#cde","f":"#ace","ps":[[0,0,' . $r . ']';
 
 	for ($i = 0; $i <= $M_2_PI; $i += $M_PI_8) {
 		echo ',[' . (sin($i) * $r) . ',0,' . (cos($i) * $r) . ']';
@@ -132,7 +176,7 @@ function flower($x, $y, $z, $id, $firstpacket) {
 	}
 
 	echo '[150,0,0]],"p":[' . $x . ',' . $y . ',' . $z . '],';
-	echo '"r":[0,0,0],"id":"fring' . $id . '","c":"#00F","f":"#06A","type":"polygon"},';
+	echo '"r":[0,0,0],"id":"fring' . $id . '","c":"#cda","f":"#ada","type":"polygon"},';
 
 /*	echo '{"ps":[';
 
@@ -145,7 +189,7 @@ function flower($x, $y, $z, $id, $firstpacket) {
 	}
 
 	echo '[75,0,0]],"p":[' . $x . ',' . $y . ',' . $z . '],';
-	echo '"r":[0,0,0],"id":"fpond' . $id . '","c":"#383","f":"#06a","type":"polygon"}';
+	echo '"r":[0,0,0],"id":"fpond' . $id . '","c":"#383","f":"#aad","type":"polygon"}';
 */
 	echo '{';
 	echo '"ps":[';
@@ -172,7 +216,7 @@ function flower($x, $y, $z, $id, $firstpacket) {
 		}
 	}
 	echo '[0,0,75]],';
-	echo '"c":"' . '#338' . '",';
+	echo '"c":"' . '#383' . '",';
 	echo '"p":[' . $x . ',' . $y . ',' . $z . '],';
 	echo '"r":[0,0,0],"id":"fctr' . $id . '"}';
 }

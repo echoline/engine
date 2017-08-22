@@ -32,7 +32,7 @@
 					$dz = ($p[2] - $pos[2]);
 					$dist = sqrt($dx*$dx + $dy*$dy + $dz*$dz);
 
-					if ($dist < 15000) {
+					if ($dist < 1500) {
 						mysql_query('insert into messages values (\'' . $cookie . '\',\'' . $row[0] . '\',\'' . $message . '\',' . time() . ')', $my_mysql);
 					}
 				}

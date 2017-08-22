@@ -100,7 +100,7 @@ function update()
 				if (stuff.s[i].w)
 					o.lineWidth = stuff.s[i].w;
 
-				if (stuff.s[i].r.length == 3) {
+				if (stuff.s[i].r && stuff.s[i].r.length == 3) {
 //					o.rotationv.x = (stuff.s[i].r[0] - o.rotation.x) / 10;
 //					o.rotationv.y = (stuff.s[i].r[1] - o.rotation.y) / 10;
 //					o.rotationv.z = (stuff.s[i].r[2] - o.rotation.z) / 10;

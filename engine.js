@@ -93,7 +93,7 @@ function Scene3D(canvas)
 			if (this.items[i].updateShown)
 				this.items[i].updateShown();
 
-	        this.context.fillStyle='#dda';
+	        this.context.fillStyle='#048';
 	        this.context.fillRect(0, 15, this.sceneWidth, this.sceneHeight-15);
 	        this.context.fillStyle='#ace';
 	        this.context.fillRect(0, 0, this.sceneWidth, 15);
