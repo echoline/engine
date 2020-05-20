@@ -31,6 +31,8 @@
 
 	$firstpacket = ($_POST['f'] == 'true');
 
+	srand(0);
+
 	require 'login.php';
 	require 'objects.php';
 

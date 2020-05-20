@@ -36,7 +36,7 @@
 						document.getElementById('messages').innerHTML = xhr.responseText;
 					}
 				};
-				xhr.open('POST', 'messages', true);
+				xhr.open('POST', 'messages.php', true);
 				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 				xhr.send('p=' + scene.origin.x + ',0,' + scene.origin.z + '&cookie=' + getCookie('userhash'));
 			}, 1000);
@@ -46,7 +46,7 @@
 
 		function say() {
 			var xhr = new XMLHttpRequest();
-			xhr.open('POST', 'messages', true);
+			xhr.open('POST', 'messages.php', true);
 			xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xhr.send('p=' + scene.origin.x + ',0,' + scene.origin.z + '&cookie=' + getCookie('userhash') + '&message=' + document.getElementById('message').value);
 			document.getElementById('message').value = '';

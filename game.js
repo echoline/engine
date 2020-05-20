@@ -125,7 +125,7 @@ function update()
 				setTimeout("update()", 333);
 		}
 	};
-	xhr.open ('POST', 'update', true);
+	xhr.open ('POST', 'update.php', true);
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	var cookie = getCookie('userhash');
 
