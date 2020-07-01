@@ -57,6 +57,10 @@
 		echo ',';
 		oasis(0, 0, 0, $i++, 150);
 		echo ',';
+		for ($i = 0; $i < 32; $i++) {
+			cactus(rand(-20000, 20000), 0, rand(-20000,20000), $i);
+			echo ',';
+		}
 	}
 
 	$my_mysql = mysqli_connect($my_host, $my_user, $my_pass, 'game');
